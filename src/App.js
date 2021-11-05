@@ -10,6 +10,7 @@ function App() {
   );
   const [ethBal, setEthBal] = useState();
   const [usdcBal, setUsdcBal] = useState();
+  const [loading, setLoading] = useState(false);
   const [fakeWallet, setFakeWallet] = useState(null);
   const [walletPhrase, setWalletPhrase] = useState(
     window.localStorage.getItem("walletPhrase")
@@ -61,6 +62,7 @@ function App() {
   }
 
   async function transferUSDC() {
+    setLoading(true);
     const account = ethers.Wallet.fromMnemonic(walletPhrase).connect(provider);
 
     // Define balanceOf and transfer functions in the contract
@@ -86,16 +88,16 @@ function App() {
     }
 
     // Parse the second argument - amount
-    try {
-      ethers.utils.parseUnits(value, 6);
-      if (value.isNegative()) {
-        throw new Error();
-      }
-    } catch {
-      console.error(`Invalid amount: ${value}`);
-      alert(`Invalid amount: ${value}`);
-      return false;
-    }
+    // try {
+    //   ethers.utils.parseUnits(value, 6);
+    //   if (value.isNegative()) {
+    //     throw new Error();
+    //   }
+    // } catch {
+    //   console.error(`Invalid amount: ${value}`);
+    //   alert(`Invalid amount: ${value}`);
+    //   return false;
+    // }
     const valueFormatted = ethers.utils.formatUnits(value, 6);
 
     // Check that the account has sufficient balance
@@ -122,6 +124,8 @@ function App() {
     console.log(`Transaction hash: ${tx.hash}`);
 
     const receipt = await tx.wait();
+
+    setLoading(false);
 
     alert(`Transaction confirmed in block ${receipt.blockNumber}`);
     console.log(`Transaction confirmed in block ${receipt.blockNumber}`);
@@ -179,7 +183,7 @@ function App() {
             USDC Balance: {usdcBal && ethers.utils.formatUnits(usdcBal, 6)}{" "}
             <br /> <br />
             <button type="button" className="App-link" onClick={transferUSDC}>
-              Send USDC to John
+              {loading ? "Loading" : "Send USDC to John"}
             </button>
             <br /> <br />
             <button type="button" className="App-link" onClick={getFakeUSDC}>
