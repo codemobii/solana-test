@@ -1,9 +1,9 @@
 /* eslint-disable no-undef */
 import "./App.css";
-import Solana from "./Solana";
+import Ether from "./Ether";
 
 function App() {
-  return <Solana />;
+  return <Ether />;
 }
 
 export default App;
